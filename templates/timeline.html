@@ -1,23 +1,33 @@
 {% extends "base.html" %}
 
+{% block title %}
+Timeline
+{% endblock %}
+
 {% block content%}
+{% if posts == None or posts == []%}
+<h1 class="text-muted">No Posts Yet</h1>
+{% endif %}
+
 {% if posts != None %}
 {% for post in posts %}
 <div class="card">
     {% if post[2] != None %}
     <div class="post-img">
-        <img src="/static/img/{{ post[2] }}" />
+        <img src="/static/img/{{ post[2] }}" class="card-img-top" />
     </div>
     {% endif %}
     <div class="card-body">
-        <h5 class="card-title">{{ post[0] }}</h1>
-            <p>{{ post[4] }}</p>
-            <p>{{ post[1] }}</p>
-            <p>by {{ post[3] }}</p>
+        <div class="card-title">
+            <h4>{{ post[0] }}</h4>
+        </div>
+        <p class="text-muted">Posted on : {{ post[4] }}</p>
+        <p>{{ post[1] }}</p>
     </div>
-    {% endfor %}
-    {% endif %}
 </div>
+{% endfor %}
+{% endif %}
+
 {% endblock %}
 
 </html>

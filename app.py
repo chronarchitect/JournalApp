@@ -22,21 +22,21 @@ def login():
         if completion == False:
             error = 'Invalid Credentials. Please try again.'
         else:
-            return redirect('timeline')
+            return redirect(url_for('timeline', user=username))
     return render_template('login.html', error=error)
 
 @app.route('/timeline', methods=['GET'])
-def timeline():
-    posts = get_posts()
+def timeline(user = 'N/A'):
+    posts = get_posts(user)
     posts.sort(key=lambda x: x[4], reverse=True)
     return render_template('timeline.html', posts=posts)
 
-def get_posts():
+def get_posts(username):
     con = sqlite3.connect(DATABASE_PATH)
     posts = []
     with con:
         cur = con.cursor()
-        cur.execute("SELECT * FROM POSTS")
+        cur.execute("SELECT * FROM POSTS WHERE username=\'"+username+"\'")
         posts = cur.fetchall()
     return posts
 
