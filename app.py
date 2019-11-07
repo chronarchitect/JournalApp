@@ -4,6 +4,11 @@ from flask import Flask, render_template, redirect, url_for, request
 
 app = Flask(__name__)
 
+@app.route('/', methods=['GET'])
+def index():
+    return render_template("index.html")
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -17,9 +22,9 @@ def login():
             return redirect(url_for('secret'))
     return render_template('login.html', error=error)
 
-@app.route('/', methods=['GET'])
+@app.route('/secret', methods=['GET'])
 def secret():
-    return "secret"
+    return "secret page"
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
