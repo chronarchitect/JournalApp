@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content%}
+{% if posts != None %}
+{% for post in posts %}
+<div class="card">
+    {% if post[2] != None %}
+    <div class="post-img">
+        <img src="/static/img/{{ post[2] }}" />
+    </div>
+    {% endif %}
+    <div class="card-body">
+        <h5 class="card-title">{{ post[0] }}</h1>
+            <p>{{ post[4] }}</p>
+            <p>{{ post[1] }}</p>
+            <p>by {{ post[3] }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
+
+</html>

@@ -27,7 +27,18 @@ def login():
 
 @app.route('/timeline', methods=['GET'])
 def timeline():
-    return 'timeline page'
+    posts = get_posts()
+    posts.sort(key=lambda x: x[4], reverse=True)
+    return render_template('timeline.html', posts=posts)
+
+def get_posts():
+    con = sqlite3.connect(DATABASE_PATH)
+    posts = []
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM POSTS")
+        posts = cur.fetchall()
+    return posts
 
 @app.route('/secret', methods=['GET'])
 def secret():
