@@ -2,6 +2,9 @@ import hashlib
 import sqlite3
 from flask import Flask, render_template, redirect, url_for, request
 
+user_logged_in = "N/A"
+DATABASE_PATH = 'static/database.db'
+
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
@@ -19,8 +22,12 @@ def login():
         if completion == False:
             error = 'Invalid Credentials. Please try again.'
         else:
-            return redirect(url_for('secret'))
+            return redirect('timeline')
     return render_template('login.html', error=error)
+
+@app.route('/timeline', methods=['GET'])
+def timeline():
+    return 'timeline page'
 
 @app.route('/secret', methods=['GET'])
 def secret():
@@ -32,23 +39,34 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        add_user(username, password)
-        return redirect(url_for('secret'))
+        if (check_user_exists(username)):
+            error = 'Username already taken'
+        else:
+            add_user(username, password)
+            return redirect(url_for('login'))
+    return render_template('register.html', error=error)
 
-    return render_template('register.html')
+def check_user_exists(username):
+    exists = False
+    con = sqlite3.connect(DATABASE_PATH)
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT username FROM USERS WHERE username=\'" + username + "\'" )
+        if(len(cur.fetchall()) != 0):
+            exists = True
+    return exists        
 
 def add_user(username, password):
-    con = sqlite3.connect('static/user.db')
-    completion = False
+    con = sqlite3.connect(DATABASE_PATH)
     with con:
-                cur = con.cursor()
-                cur.execute('INSERT INTO USERS (USERNAME, PASSWORD) VALUES (?, ?)', (username, password))
-                
-def check_password(hashed_password, user_password):
-    return hashed_password == user_password
+        cur = con.cursor()
+        cur.execute('INSERT INTO USERS (USERNAME, PASSWORD) VALUES (?, ?)', (username, password))
+
+def check_password(dbPass, password):
+    return dbPass == password
 
 def validate(username, password):
-    con = sqlite3.connect('static/user.db')
+    con = sqlite3.connect(DATABASE_PATH)
     completion = False
     with con:
                 cur = con.cursor()
